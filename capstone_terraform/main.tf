@@ -22,6 +22,7 @@ resource "azurerm_kubernetes_cluster" "capstone" {
   }
 
   azure_active_directory_role_based_access_control {
+    managed                = true
     azure_rbac_enabled     = true
     admin_group_object_ids = [azuread_group.aks_admins.id]
   }
@@ -29,6 +30,7 @@ resource "azurerm_kubernetes_cluster" "capstone" {
   default_node_pool {
     name                = "defaultpool"
     vm_size             = "Standard_D4S_v3"
+    enable_auto_scaling = true
     max_count           = 5
     min_count           = 1
     os_disk_size_gb     = 30
