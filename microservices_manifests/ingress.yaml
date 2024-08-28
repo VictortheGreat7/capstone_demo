@@ -1,0 +1,129 @@
+# This file contains the ingress resources for the sock-shop, monitoring, alertmanager and kibana services
+
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: greatvictor.anjorin@gmail.com
+    privateKeySecretRef:
+      name: letsencrypt-private-key
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sock-shop-ingress
+  namespace: sock-shop
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - sockshop.mywonder.works
+    secretName: letsencrypt-cert
+  rules:
+  - host: sockshop.mywonder.works
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: front-end
+            port:
+              number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: monitoring-ingress
+  namespace: monitoring
+  annotations:
+    nginx.ingress.kubernetes.io/whitelist-source-range: "102.89.22.59/32"
+    cert-manager.io/cluster-issuer: "letsencrypt"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - grafana.mywonder.works
+    - prometheus.mywonder.works
+    secretName: monitoring-tls
+  rules:
+  - host: grafana.mywonder.works
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: grafana
+            port: 
+              number: 80
+  - host: prometheus.mywonder.works
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: prometheus
+            port: 
+              number: 9090
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: alertmanager-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/whitelist-source-range: "102.89.22.59/32"
+    cert-manager.io/cluster-issuer: "letsencrypt"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - alertmanager.mywonder.works
+    secretName: alerting-tls
+  rules:
+  - host: alertmanager.mywonder.works
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: alertmanager
+            port: 
+              number: 9093
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kibana-ingress
+  namespace: kube-system
+  annotations:
+    nginx.ingress.kubernetes.io/whitelist-source-range: "102.89.22.59/32"
+    cert-manager.io/cluster-issuer: "letsencrypt"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - kibana.mywonder.works
+    secretName: kibana-tls
+  rules:
+  - host: kibana.mywonder.works
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: kibana
+            port: 
+              number: 5601

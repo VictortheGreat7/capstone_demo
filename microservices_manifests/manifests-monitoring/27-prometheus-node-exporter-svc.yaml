@@ -1,0 +1,19 @@
+# This file is used to create a service for the node-exporter pod. The service is of type ClusterIP and is used to expose the node-exporter pod to other pods in the cluster.
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: exporter
+    app.kubernetes.io/name: node-exporter
+  name: node-exporter
+  namespace: monitoring
+spec:
+  clusterIP: None
+  ports:
+  - name: http
+    port: 9100
+    targetPort: 9100
+  selector:
+    app.kubernetes.io/component: exporter
+    app.kubernetes.io/name: node-exporter

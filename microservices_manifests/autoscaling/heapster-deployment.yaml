@@ -1,0 +1,35 @@
+# Description: This file contains the deployment configuration for the heapster service. Heapster is a cluster-wide aggregator of monitoring and event data. It currently supports Kubernetes and CoreOS natively. With the necessary configuration, Heapster can be run in a Kubernetes cluster and configured to collect and store data from the cluster. The data collected by Heapster can be stored in a variety of backends including InfluxDB, Google Cloud Monitoring, and others. The data can be used to monitor the health of the cluster and to make decisions about scaling the cluster up or down based on the current load.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: heapster
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      task: monitoring
+      k8s-app: heapster
+  template:
+    metadata:
+      labels:
+        task: monitoring
+        k8s-app: heapster
+    spec:
+      serviceAccountName: heapster
+      containers:
+      - name: heapster
+        image: gcr.io/google_containers/heapster-amd64:v1.4.0
+        imagePullPolicy: IfNotPresent
+        command:
+        - /heapster
+        - --source=kubernetes:https://kubernetes.default
+        - --sink=influxdb:http://monitoring-influxdb:8086
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi

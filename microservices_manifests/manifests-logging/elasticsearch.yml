@@ -1,0 +1,51 @@
+# This manifest file is used to deploy the elasticsearch service in the kubernetes cluster.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch
+  labels:
+    name: elasticsearch
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: elasticsearch
+  template:
+    metadata:
+      labels:
+        name: elasticsearch
+    spec:
+      containers:
+      - image: elasticsearch:7.17.23
+        name: elasticsearch
+        ports:
+        - name: elasticsearch
+          containerPort: 9200
+        resources:
+          requests:
+            memory: "8Gi"
+            cpu: "2"
+          limits:
+            memory: "16Gi"
+            cpu: "4"
+        env:
+        - name: discovery.type
+          value: single-node
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch
+  labels:
+    name: elasticsearch
+  namespace: kube-system
+spec:
+  ports:
+  - port: 9200
+    targetPort: 9200
+  selector:
+    name: elasticsearch

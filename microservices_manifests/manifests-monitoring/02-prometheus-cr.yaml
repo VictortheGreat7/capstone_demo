@@ -1,0 +1,33 @@
+# This file is used to create a ClusterRole for Prometheus to access the Kubernetes API.
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: prometheus
+  labels:
+    app: prometheus
+rules:
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - ingresses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups: [""] # "" indicates the core API group
+  resources:
+  - nodes
+  - nodes/metrics
+  - nodes/proxy
+  - services
+  - endpoints
+  - pods
+  verbs:
+  - get
+  - list
+  - watch
+- nonResourceURLs:
+  - /metrics
+  verbs:
+  - get

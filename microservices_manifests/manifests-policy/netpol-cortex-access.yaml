@@ -1,0 +1,15 @@
+# Description: Network policy to allow access to cortex service from sock-shop namespace
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cortex-access
+  namespace: sock-shop
+spec:
+  podSelector:
+    matchLabels:
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              name: cortex

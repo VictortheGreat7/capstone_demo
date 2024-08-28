@@ -1,0 +1,16 @@
+# This file is used to create a ConfigMap that contains the Prometheus datasource configuration for Grafana.
+
+apiVersion: v1
+data:
+  prometheus-datasource.json: |
+    {
+      "name": "prometheus",
+      "type": "prometheus",
+      "url": "http://prometheus:9090",
+      "access": "proxy",
+      "basicAuth": false
+    }
+kind: ConfigMap
+metadata:
+  name: grafana-import-dashboards-prometheus-datasource
+  namespace: monitoring

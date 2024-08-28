@@ -1,0 +1,7 @@
+# This file creates a service account for heapster
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: heapster
+  namespace: kube-system

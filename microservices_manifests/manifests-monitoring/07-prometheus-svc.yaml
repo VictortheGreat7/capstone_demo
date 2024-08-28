@@ -1,0 +1,21 @@
+# This file is used to create a service for the prometheus deployment. The service is of type NodePort and is exposed on port 31090. The service is annotated with prometheus.io/scrape: 'true' to allow prometheus to scrape metrics from the service.
+
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    name: prometheus
+  name: prometheus
+  namespace: monitoring
+spec:
+  selector:
+    app: prometheus
+  type: NodePort
+  ports:
+  - name: prometheus
+    protocol: TCP
+    port: 9090
+    targetPort: 9090
+    nodePort: 31090

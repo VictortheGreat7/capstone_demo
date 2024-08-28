@@ -1,0 +1,19 @@
+# Description: Network policy to allow access to orders service from front-end service
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: orders-access
+  namespace: sock-shop
+spec:
+  podSelector:
+    matchLabels:
+      name: orders
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              name: front-end
+      ports:
+        - protocol: TCP
+          port: 80

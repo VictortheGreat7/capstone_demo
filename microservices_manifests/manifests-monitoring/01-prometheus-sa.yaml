@@ -1,0 +1,9 @@
+# This file creates a service account for Prometheus to use in the monitoring namespace.
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: prometheus
+  namespace: monitoring
+  labels:
+    app: prometheus

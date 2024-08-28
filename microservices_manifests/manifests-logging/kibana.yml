@@ -1,0 +1,41 @@
+# This manifest file is used to deploy Kibana in the Kubernetes cluster.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kibana
+  labels:
+    name: kibana
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: kibana
+  template:
+    metadata:
+      labels:
+        name: kibana
+    spec:
+      containers:
+      - image: kibana:7.17.23
+        name: kibana
+        ports:
+        - name: kibana
+          containerPort: 5601
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kibana
+  labels:
+    name: kibana
+  namespace: kube-system
+spec:
+  type: NodePort
+  ports:
+  - port: 5601
+    targetPort: 5601
+    nodePort: 31601
+  selector:
+    name: kibana

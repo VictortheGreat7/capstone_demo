@@ -1,0 +1,44 @@
+# This is the deployment file for alertmanager. It is a part of the alerting microservice. It is responsible for sending alerts to slack channel. It uses the slack-hook-url secret to send alerts to slack channel. It uses the alertmanager configmap to configure the alertmanager. It uses the configure_secret.sh script to configure the slack-hook-url secret in the alertmanager configuration file. It uses the prom/alertmanager:latest image. It has 1 replica. It has a nodeSelector to run on linux nodes. It has a volume to mount the alertmanager configuration file and a volume to mount the configure_secret.sh script. It has a containerPort of 9093. It has a command to run the configure_secret.sh script. It has an environment variable SLACK_HOOK_URL to get the slack-hook-url secret. It has a secretKeyRef to get the slack-hook-url secret.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alertmanager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alertmanager
+  template:
+    metadata:
+      name: alertmanager
+      labels:
+        app: alertmanager
+    spec:
+      containers:
+      - name: alertmanager
+        image: prom/alertmanager:latest
+        env:
+          - name: SLACK_HOOK_URL
+            valueFrom:
+              secretKeyRef:
+                name: slack-hook-url
+                key: slack-hook-url
+        command: ['/bin/sh', '/etc/alertmanager/configure_secret.sh']
+        ports:
+        - name: alertmanager
+          containerPort: 9093
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/alertmanager
+        - name: tmp-volume
+          mountPath: /tmp
+      volumes:
+      - name: config-volume
+        configMap:
+          name: alertmanager
+      - name: tmp-volume
+        emptyDir: {}
+      nodeSelector:
+        kubernetes.io/os: linux
+

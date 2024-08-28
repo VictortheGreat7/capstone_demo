@@ -1,0 +1,25 @@
+# This manifest creates a role and rolebinding for the default service account in the monitoring namespace to read endpoints.
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: monitoring
+  name: grafana-endpoints-reader
+rules:
+- apiGroups: [""]
+  resources: ["endpoints"]
+  verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  namespace: monitoring
+  name: grafana-endpoints-reader-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: grafana-endpoints-reader
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: monitoring

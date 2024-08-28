@@ -1,0 +1,19 @@
+# This file is used to create a service for the influxdb deployment. This service is used to expose the influxdb deployment to the outside world. The service is created in the kube-system namespace. The service is created with the name monitoring-influxdb and the selector is set to k8s-app: influxdb. The service is created on port 8086 and the target port is also set to 8086. The service is created with the labels task: monitoring, kubernetes.io/cluster-service: 'true' and kubernetes.io/name: monitoring-influxdb. The service is created with the apiVersion set to v1 and kind set to Service.
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    task: monitoring
+    # For use as a Cluster add-on (https://github.com/kubernetes/kubernetes/tree/master/cluster/addons)
+    # If you are NOT using this as an addon, you should comment out this line.
+    kubernetes.io/cluster-service: 'true'
+    kubernetes.io/name: monitoring-influxdb
+  name: monitoring-influxdb
+  namespace: kube-system
+spec:
+  ports:
+  - port: 8086
+    targetPort: 8086
+  selector:
+    k8s-app: influxdb

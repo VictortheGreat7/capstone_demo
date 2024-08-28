@@ -1,0 +1,17 @@
+# This file contains the Horizontal Pod Autoscaler configuration for the user service.
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: user
+  namespace: sock-shop
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1beta1
+    kind: Deployment
+    name: user
+
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 50
+    
