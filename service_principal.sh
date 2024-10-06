@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Check if the jq command exists and install it if it doesn't
+if ! sudo which jq &> /dev/null; then
+  echo "Error: jq command not found. Installing jq..."
+  sudo apt-get update
+  sudo apt-get install -y jq
+fi
+
 # Define variables
 SERVICE_PRINCIPAL_NAME="capstone-service-principal"
 ROLE="Owner"
@@ -20,10 +27,9 @@ EOF
 )
 ESCAPED_CREDENTIALS=$(echo "$CREDENTIALS" | jq -c .) # Escape the credentials for the az command
 USER_OBJECT_ID=$(az ad signed-in-user show --query id -o tsv) # Get the current user's object ID
-
-# Check if the service principal already exists
 EXISTING_SP=$(az ad sp list --display-name "$SERVICE_PRINCIPAL_NAME" --query "[].appId" -o tsv)
 
+# Check if the service principal already exists
 if [ -z "$EXISTING_SP" ]; then
     # Create the service principal if it doesn't exist
     echo "Creating service principal with name: $SERVICE_PRINCIPAL_NAME"
