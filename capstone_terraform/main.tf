@@ -23,7 +23,7 @@ resource "azurerm_kubernetes_cluster" "capstone" {
 
   azure_active_directory_role_based_access_control {
     azure_rbac_enabled     = true
-    admin_group_object_ids = [azuread_group.aks_admins.id]
+    admin_group_object_ids = [azuread_group.aks_admins.object_id]
   }
 
   default_node_pool {
