@@ -66,11 +66,11 @@
         cmd: kubectl apply -f microservices_manifests/manifests-policy
       become: yes
 
-    # # Apply issuer and ingress manifests for certificate management and ingress configuration
-    # - name: Apply Issuer and Ingress Manifests
-    #   ansible.builtin.command:
-    #     cmd: kubectl apply -f microservices_manifests/ingress.yaml
-    #   become: yes
+    # Apply issuer and ingress manifests for certificate management and ingress configuration
+    - name: Apply Issuer and Ingress Manifests
+      ansible.builtin.command:
+        cmd: kubectl apply -f microservices_manifests/ingress.yaml
+      become: yes
 
     # Optional: Uncomment to apply pod autoscaling manifests
     # - name: Apply Pod Autoscaling Manifests
@@ -78,24 +78,24 @@
     #     cmd: kubectl apply -f microservices_manifests/autoscaling
     #   become: yes
 
-    # # Retrieve and display all pods in all namespaces
-    # - name: Get all pods in all namespaces
-    #   ansible.builtin.command:
-    #     cmd: kubectl get pods --all-namespaces
-    #   register: pods_output
-    #   become: yes
+    # Retrieve and display all pods in all namespaces
+    - name: Get all pods in all namespaces
+      ansible.builtin.command:
+        cmd: kubectl get pods --all-namespaces
+      register: pods_output
+      become: yes
 
-    # - name: Display all pods in all namespaces
-    #   ansible.builtin.debug:
-    #     msg: "{{ pods_output.stdout }}"
+    - name: Display all pods in all namespaces
+      ansible.builtin.debug:
+        msg: "{{ pods_output.stdout }}"
 
-    # # Retrieve and display all ingress resources
-    # - name: Get all ingress resources
-    #   ansible.builtin.command:
-    #     cmd: kubectl get ingress
-    #   register: ingress_output
-    #   become: yes
+    # Retrieve and display all ingress resources
+    - name: Get all ingress resources
+      ansible.builtin.command:
+        cmd: kubectl get ingress
+      register: ingress_output
+      become: yes
 
-    # - name: Display all ingress resources
-    #   ansible.builtin.debug:
-    #     msg: "{{ ingress_output.stdout }}"
+    - name: Display all ingress resources
+      ansible.builtin.debug:
+        msg: "{{ ingress_output.stdout }}"
